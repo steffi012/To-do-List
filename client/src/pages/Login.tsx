@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./Login.css";
 import { UsePublicRequest } from "../hooks/useAPI";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -10,32 +9,29 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { login, isAuthenticated, username } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const { publicApiRequest } = UsePublicRequest();
 
-
   const handleLogin = async () => {
-    setError(null); 
-    setIsSubmitting(true); 
+    setError(null);
+    setIsSubmitting(true);
 
     try {
       const res = await publicApiRequest({
         cmd: "/auth",
-        method: "GET", // Adjust method if required
-        args: { email, password }, // Pass email and password
+        method: "GET",
+        args: { email, password },
       });
       login(email, password);
-      if (isAuthenticated) {
-         console.log("login succes")
-         
-      } else {
+      if (!isAuthenticated) {
         setError("Invalid response from server.");
       }
     } catch (err: any) {
-      console.error("Error during login:", err);
-      setError(err.response?.data?.message || "Login failed. Please try again.");
+      setError(
+        err.response?.data?.message || "Login failed. Please try again."
+      );
     } finally {
-      setIsSubmitting(false); // Re-enable button
+      setIsSubmitting(false);
     }
   };
 

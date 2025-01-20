@@ -1,7 +1,6 @@
 import React, { createContext, useState, ReactNode, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Define the shape of the context value
 interface AuthContextType {
   isAuthenticated: boolean;
   username: string | null;
@@ -9,10 +8,8 @@ interface AuthContextType {
   logout: () => void;
 }
 
-// Create the AuthContext with a default value
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Props for AuthProvider
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -56,7 +53,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 };
 
-// Custom hook to use AuthContext
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {

@@ -2,42 +2,82 @@
   "todo": [
     {
       "id": "1",
-      "title": "1Learn JavaScript",
-      "status": "todo",
+      "title": "Learn JavaScript-Updated1234567890",
+      "status": "done",
       "dueDate": "2020-12-31",
-      "description": "Learn JavaScript basics",
-      "assignedUser": 1,
-      "priority": "high",
+      "description": "Learn JavaScript basics1234",
+      "assignedUser": "2",
+      "priority": "High",
       "tags": []
     },
     {
-      "id": "1",
-      "title": "3Learn JavaScript1",
+      "id": "2",
+      "title": "Learn JavaScript1",
       "status": "inProgress",
       "dueDate": "2020-12-31",
       "description": "Learn JavaScript basics",
       "assignedUser": 1,
-      "priority": "high",
+      "priority": "High",
       "tags": []
     },
     {
-      "id": "1",
-      "title": "2Learn JavaScript2",
+      "id": "3",
+      "title": "Learn JavaScript2",
       "status": "done",
       "dueDate": "2020-12-31",
       "description": "Learn JavaScript basics",
       "assignedUser": 1,
-      "priority": "low",
+      "priority": "Low",
       "tags": []
     },
     {
-      "id": "1",
-      "title": "4Learn JavaScript3",
+      "id": "4",
+      "title": "Learn JavaScript3",
       "status": "todo",
       "dueDate": "2020-12-31",
       "description": "Learn JavaScript basics",
       "assignedUser": 1,
-      "priority": "high",
+      "priority": "High",
+      "tags": []
+    },
+    {
+      "id": "a5ce",
+      "title": "Learn React",
+      "status": "done",
+      "dueDate": "2025-01-20",
+      "description": "Complete React project for portfolio",
+      "assignedUser": 1,
+      "priority": "High",
+      "tags": []
+    },
+    {
+      "id": "7aea",
+      "title": "Learn Mongo ",
+      "description": "Learn Mongo Basics",
+      "dueDate": "2025-01-31",
+      "assignedUser": "2",
+      "priority": "Low",
+      "status": "incomplete",
+      "tags": []
+    },
+    {
+      "id": "eae8",
+      "title": "Learn learn maths",
+      "description": "Learn learn maths Learn learn maths",
+      "dueDate": "2025-11-01",
+      "assignedUser": "2",
+      "priority": "Medium",
+      "status": "todo",
+      "tags": []
+    },
+    {
+      "id": "07fc",
+      "title": "drgd - 20/10/25",
+      "description": "grth",
+      "dueDate": "2025-05-18",
+      "assignedUser": "2",
+      "priority": "Medium",
+      "status": "todo",
       "tags": []
     }
   ],
@@ -66,17 +106,6 @@
       "id": "427d",
       "name": "Dean Doe",
       "email": "dean@example.com"
-    },
-    {
-      "id": "0d1c",
-      "name": "Steffi",
-      "email": "steffi@gmail.com"
-    },
-    {
-      "id": "b514",
-      "name": "Steffi1",
-      "email": "steffi1@gmail.com",
-      "password": "123"
     }
   ],
   "auth": {

@@ -1,5 +1,4 @@
 .listWrapper {
-    /* height: 155px; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,13 +41,13 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 1rem; /* Adjusted gap between the buttons */
+    gap: 1rem; 
     font-size: 14px;
     font-weight: 600;
 }
 
 .header .calendar .date {
-    margin-left: auto; /* Pushes the date to the far right */
+    margin-left: auto; 
     font-size: 14px;
     font-weight: 600;
 }

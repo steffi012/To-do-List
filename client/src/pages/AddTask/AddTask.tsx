@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useNavigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate, useLocation } from "react-router-dom";
 import bgImage from "../../Icons/icon/bgImage.png";
 import {
   TextField,
@@ -12,8 +13,9 @@ import {
   FormControl,
   Box,
   Typography,
-  Grid,
   Container,
+  Grid,
+  CircularProgress,
 } from "@mui/material";
 import { UsePublicRequest } from "../../hooks/useAPI";
 
@@ -31,43 +33,65 @@ type Task = z.infer<typeof taskSchema>;
 export default function AddTask() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [users, setUsers] = useState<any[]>([]); // State to store fetched users
+  const [users, setUsers] = useState<any[]>([]);
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
-  } = useForm<Task>();
+  } = useForm<Task>({
+    resolver: zodResolver(taskSchema),
+  });
+
   const navigate = useNavigate();
   const { publicApiRequest } = UsePublicRequest();
 
-  useEffect(() => {
-    userSelect();
-  }, []);
+  const { state } = useLocation();
+  const taskData = state?.taskData;
+  const edit = state?.edit || false;
 
-  // Fetch users for the "Assigned User" field
-  const userSelect = async () => {
+  useEffect(() => {
+    if (taskData) {
+      setValue("title", taskData.title);
+      setValue("description", taskData.description);
+      setValue("dueDate", taskData.dueDate);
+      setValue("assignedUser", taskData.assignedUser);
+      setValue("priority", taskData.priority);
+      setValue("tags", taskData.tags || []);
+    }
+    fetchUsers();
+  }, [taskData, setValue]);
+
+  const fetchUsers = async () => {
     setLoading(true);
     try {
       const res = await publicApiRequest({
         cmd: "/users",
         method: "GET",
       });
-      setUsers(res.data); 
+      setUsers(res.data);
     } catch (err) {
-      setError("Error fetching users");
+      console.error(err);
+      setError("Failed to fetch users. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle form submission
   const onSubmit = async (data: Task) => {
     setLoading(true);
+    setError(null);
     try {
-      console.log(data); 
-      navigate("/tasks"); 
+      await publicApiRequest({
+        cmd: edit ? `/todo/${taskData.id}` : "/todo",
+        method: edit ? "PATCH" : "POST",
+        args: { ...data, status: "todo", tags: data.tags || [] },
+      });
+      navigate("/task_list");
     } catch (err) {
-      setError("Error adding task");
+      console.error(err);
+      setError("Failed to add task. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -95,21 +119,25 @@ export default function AddTask() {
         }}
       >
         <Typography variant="h4" gutterBottom align="center">
-          Add Task
+          {edit ? "Edit Task" : "Add Task"}
         </Typography>
-        {loading && <Typography>Loading...</Typography>}
+
+        {loading && (
+          <Box display="flex" justifyContent="center" mb={2}>
+            <CircularProgress />
+          </Box>
+        )}
         {error && <Typography color="error">{error}</Typography>}
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={4}>
-            {/* Left Column */}
             <Grid item xs={12} md={6}>
               <TextField
                 label="Task Title"
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                {...register("title", { required: true })}
+                {...register("title")}
                 error={!!errors.title}
                 helperText={errors.title?.message}
               />
@@ -119,11 +147,24 @@ export default function AddTask() {
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                {...register("description", { required: true })}
+                {...register("description")}
                 error={!!errors.description}
                 helperText={errors.description?.message}
               />
+
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Priority</InputLabel>
+                <Select
+                  {...register("priority")}
+                  defaultValue={taskData?.priority || ""}
+                >
+                  <MenuItem value="Low">Low</MenuItem>
+                  <MenuItem value="Medium">Medium</MenuItem>
+                  <MenuItem value="High">High</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
                 label="Due Date"
@@ -131,7 +172,7 @@ export default function AddTask() {
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                {...register("dueDate", { required: true })}
+                {...register("dueDate")}
                 error={!!errors.dueDate}
                 helperText={errors.dueDate?.message}
                 InputLabelProps={{ shrink: true }}
@@ -140,33 +181,20 @@ export default function AddTask() {
               <FormControl fullWidth margin="normal">
                 <InputLabel>Assigned User</InputLabel>
                 <Select
-                  label="Assigned User"
-                  {...register("assignedUser", { required: true })}
-                  error={!!errors.assignedUser}
+                  {...register("assignedUser")}
+                  defaultValue={taskData?.assignedUser || ""}
                 >
                   {users.length > 0 ? (
                     users.map((user: any) => (
-                      <MenuItem key={user.id} value={user.id}>
+                      <MenuItem key={user.id || taskData?.assignedUser} value={user.id || taskData?.assignedUser}>
                         {user.name}
                       </MenuItem>
                     ))
                   ) : (
-                    <MenuItem value="">No users available</MenuItem>
+                    <MenuItem value="">
+                      {loading ? "Loading users..." : "No users available"}
+                    </MenuItem>
                   )}
-                </Select>
-                {errors.assignedUser && <Typography color="error">{errors.assignedUser.message}</Typography>}
-              </FormControl>
-
-              <FormControl fullWidth margin="normal">
-                <InputLabel>Priority</InputLabel>
-                <Select
-                  label="Priority"
-                  {...register("priority")}
-                  defaultValue="Low"
-                >
-                  <MenuItem value="Low">Low</MenuItem>
-                  <MenuItem value="Medium">Medium</MenuItem>
-                  <MenuItem value="High">High</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -178,8 +206,9 @@ export default function AddTask() {
             color="primary"
             fullWidth
             sx={{ marginTop: 2 }}
+            disabled={loading}
           >
-            Submit
+            {edit ? "Update Task" : "Add Task"}
           </Button>
         </form>
       </Container>
