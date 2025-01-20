@@ -208,7 +208,7 @@ export default function AddTask() {
             sx={{ marginTop: 2 }}
             disabled={loading}
           >
-            {edit ? "Update Task" : "Add Task"}
+            Submit Task 
           </Button>
         </form>
       </Container>

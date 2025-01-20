@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "18": "^0.0.0",
@@ -46,6 +47,7 @@
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/ui": "^3.0.2",
     "babel-jest": "^29.7.0",
     "eslint": "^9.17.0",
     "eslint-plugin-react-hooks": "^5.0.0",
